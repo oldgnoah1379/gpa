@@ -13,6 +13,12 @@ func New(db *gorm.DB) *Repository {
 	return &Repository{db}
 }
 
+func (r Repository) Count(ctx context.Context, filters []Filter) (int, error) {
+	var result int64
+	err := ApplyFilters(r.DB.WithContext(ctx), filters).Count(&result).Error
+	return int(result), err
+}
+
 func (r Repository) Find(ctx context.Context, models interface{}, filters []Filter) error {
 	return ApplyFilters(r.DB.WithContext(ctx), filters).Find(models).Error
 }
